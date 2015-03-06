@@ -1,0 +1,11 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+GET         /user                    controllers.bootstrap.UserController.find(username: Option[String] ?= None)
+POST        /user                    controllers.bootstrap.UserController.create
+POST        /user/login              controllers.bootstrap.UserController.login
+
+POST        /service/register        controllers.bootstrap.OAuthController.registerService
+POST        /service/exchange        controllers.bootstrap.OAuthController.exchangeOAuthToken
+POST        /service/login           controllers.bootstrap.OAuthController.loginOAuthToken
