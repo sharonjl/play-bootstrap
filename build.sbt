@@ -1,4 +1,4 @@
-name := """users"""
+name := """play-bootstrap"""
 
 version := "1.0-SNAPSHOT"
 
@@ -18,3 +18,5 @@ libraryDependencies ++= Seq(
   "joda-time" % "joda-time" % "2.3",
   "org.scalatestplus" %% "play" % "1.2.0" % "test"
 )
+
+lazy val root = (project in file(".")).enablePlugins(PlayScala)

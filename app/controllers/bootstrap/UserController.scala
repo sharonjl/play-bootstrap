@@ -11,6 +11,8 @@ import play.api.db.DB
 import play.api.libs.json.Json
 import play.api.libs.json.Json._
 import play.api.mvc.{Action, Controller}
+import utils.APIExceptions.APIException
+import utils.APIExceptions.UserDoesNotExistException
 import utils.APIExceptions._
 
 import scala.util.{Failure, Success}
@@ -81,13 +83,15 @@ object UserController extends Controller {
     }
   }
 
-//  def profileProgress(progress: Int) = AuthenticatedAction { implicit request =>
-//    val errorTag = "user.profileProgress"
-//    DB.withConnection { implicit c =>
-//      UserDAO.setProfileProgress(request.user.username, progress) match {
-//        case Success(user) => NoContent
-//        case Failure(e: APIException) => e.asHttpStatus(errorTag, toJson(e))
-//      }
-//    }
-//  }
+  def usernameAvailability(username: String) = Action { implicit request =>
+    val errorTag = "user.find"
+    DB.withConnection { implicit c =>
+      UserDAO.findUser(username) match {
+        case Success(user) => Ok(Json.obj("available" -> false))
+        case Failure(e: UserDoesNotExistException) => Ok(Json.obj("available" -> true))
+        case Failure(e: APIException) => e.asHttpStatus(errorTag, toJson(e))
+      }
+    }
+  }
+
 }

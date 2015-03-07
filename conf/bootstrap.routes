@@ -3,6 +3,7 @@
 # ~~~~
 
 GET         /user                    controllers.bootstrap.UserController.find(username: Option[String] ?= None)
+GET         /user/availability       controllers.bootstrap.UserController.usernameAvailability(username: String)
 POST        /user                    controllers.bootstrap.UserController.create
 POST        /user/login              controllers.bootstrap.UserController.login
 
