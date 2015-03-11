@@ -83,14 +83,14 @@ object OAuthServiceDAO {
     })
   }
 
-  def findRegisteredOAuthService(username: String)(implicit connection: Connection): Try[Option[OAuthService]] = {
+  def findRegisteredOAuthService(username: String)(implicit connection: Connection): Try[List[OAuthService]] = {
     Try {
       Success(SQL(
         """SELECT * FROM oauth_services WHERE username = {username}
         """.stripMargin
       ).on(
           'username -> username
-        ).as(basicService.singleOpt))
+        ).as(basicService *).toList)
     } transform(s => Success(s.get), {
       case e: PSQLException => e.getSQLState match {
         case s => {
