@@ -59,7 +59,7 @@ object OptionalAuthenticatedAction extends ActionBuilder[OptionalAuthenticatedRe
           Right(new OptionalAuthenticatedRequest(None, request))
         }
     } getOrElse {
-      Left(Unauthorized)
+      Right(new OptionalAuthenticatedRequest(None, request))
     }
   }
 }
