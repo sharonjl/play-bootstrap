@@ -19,6 +19,8 @@ object OAuthServiceDAO {
                           serviceName: String,
                           serviceUserId: String)
 
+  case class MinimumOAuthService(serviceName: String, serviceUserId: String)
+
   private val basicService: RowParser[OAuthService] = {
     long("id") ~ str("username") ~ str("service_name") ~ str("service_user_id") map {
       case id ~ username ~ serviceName ~ serviceUserId => OAuthService(Some(id), username, serviceName, serviceUserId)
@@ -69,6 +71,25 @@ object OAuthServiceDAO {
       ).on(
           'serviceName -> serviceName,
           'serviceUserId -> serviceUserId
+        ).as(basicService.singleOpt))
+    } transform(s => Success(s.get), {
+      case e: PSQLException => e.getSQLState match {
+        case s => {
+          Logger.debug(s"SQL STATE ${e.getSQLState}" , e)
+          Failure(UnknownSQLException(s) initCause e)
+        }
+      }
+      case t: Throwable => Failure(UnknownException() initCause t)
+    })
+  }
+
+  def findRegisteredOAuthService(username: String)(implicit connection: Connection): Try[Option[OAuthService]] = {
+    Try {
+      Success(SQL(
+        """SELECT * FROM oauth_services WHERE username = {username}
+        """.stripMargin
+      ).on(
+          'username -> username
         ).as(basicService.singleOpt))
     } transform(s => Success(s.get), {
       case e: PSQLException => e.getSQLState match {
