@@ -83,7 +83,7 @@ object UserController extends Controller {
           case Failure(e: APIException) => e.asHttpStatus(errorTag, toJson(e))
         }
       } else {
-        NotFound
+        UserDoesNotExistException().asHttpStatus(errorTag)
       }
     }
   }
