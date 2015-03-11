@@ -1,5 +1,6 @@
 package actions
 
+import com.google.common.base.Optional
 import dao.UserDAO
 import UserDAO._
 import play.api.Play.current
@@ -31,11 +32,32 @@ object AuthenticatedAction extends ActionBuilder[AuthenticatedRequest] with Acti
     request.headers.get("x-access-token").map {
       token =>
         if(token.length > 0) {
-
+          DB.withConnection { implicit c =>
+            UserDAO.findUserFromSecret(secret = token).map(new AuthenticatedRequest(_, request)).toRight(Forbidden)
+          }
+        } else {
+          Left(Unauthorized)
         }
-        DB.withConnection { implicit c =>
-        UserDAO.findUserFromSecret(secret = token).map(new AuthenticatedRequest(_, request)).toRight(Forbidden)
-      }
+    } getOrElse {
+      Left(Unauthorized)
+    }
+  }
+}
+
+
+class OptionalAuthenticatedRequest[A](val user: Option[User], request: Request[A]) extends WrappedRequest[A](request)
+
+object OptionalAuthenticatedAction extends ActionBuilder[OptionalAuthenticatedRequest] with ActionRefiner[Request, OptionalAuthenticatedRequest] {
+  def refine[A](request: Request[A]): Future[Either[Result, OptionalAuthenticatedRequest[A]]] = Future.successful {
+    request.headers.get("x-access-token").map {
+      token =>
+        if(token.length > 0) {
+          DB.withConnection { implicit c =>
+            Right(new OptionalAuthenticatedRequest(UserDAO.findUserFromSecret(secret = token), request))
+          }
+        } else {
+          Right(new OptionalAuthenticatedRequest(None, request))
+        }
     } getOrElse {
       Left(Unauthorized)
     }

@@ -1,6 +1,6 @@
 package controllers.bootstrap
 
-import actions.AuthenticatedAction
+import actions.{OptionalAuthenticatedAction, AuthenticatedAction}
 import dao.OAuthServiceDAO.OAuthService
 import dao.UserDAO
 import dao.UserDAO._
@@ -73,12 +73,17 @@ object UserController extends Controller {
     )
   }
 
-  def find(username: Option[String]) = AuthenticatedAction { implicit request =>
+  def find(username: Option[String]) = OptionalAuthenticatedAction { implicit request =>
     val errorTag = "user.find"
     DB.withConnection { implicit c =>
-      UserDAO.findUser(username getOrElse request.user.username) match {
-        case Success(user) => Ok(toJson(user))
-        case Failure(e: APIException) => e.asHttpStatus(errorTag, toJson(e))
+      val _username = username getOrElse (request.user.map(_.username) getOrElse "")
+      if(_username.length > 0){
+        UserDAO.findUser(_username) match {
+          case Success(user) => Ok(toJson(user))
+          case Failure(e: APIException) => e.asHttpStatus(errorTag, toJson(e))
+        }
+      } else {
+        NotFound
       }
     }
   }

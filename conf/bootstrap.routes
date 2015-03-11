@@ -3,10 +3,8 @@
 # ~~~~
 
 GET         /user                    controllers.bootstrap.UserController.find(username: Option[String] ?= None)
-GET         /user/availability       controllers.bootstrap.UserController.usernameAvailability(username: String)
 POST        /user                    controllers.bootstrap.UserController.create
 POST        /user/session            controllers.bootstrap.UserController.login
 
-POST        /service/register        controllers.bootstrap.OAuthController.registerService
-POST        /service/exchange        controllers.bootstrap.OAuthController.exchangeOAuthToken
+POST        /service                 controllers.bootstrap.OAuthController.registerService
 POST        /service/session         controllers.bootstrap.OAuthController.loginOAuthToken
