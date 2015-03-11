@@ -160,7 +160,7 @@ object OAuthController extends Controller {
   }
 
   def loginOAuthToken = Action.async { implicit request =>
-    val errorTag = "service.loginOAuthToken"
+    val errorTag = "service.session.login"
     loginOAuthTokenForm.bindFromRequest.fold({
       formWithErrors => Future {
         DataValidationException().asHttpStatus(errorTag, formWithErrors.errorsAsJson)

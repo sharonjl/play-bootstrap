@@ -2,9 +2,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET         /user                    controllers.bootstrap.UserController.find(username: Option[String] ?= None)
-POST        /user                    controllers.bootstrap.UserController.create
-POST        /user/session            controllers.bootstrap.UserController.login
+GET         /user                   controllers.bootstrap.UserController.find(username: Option[String] ?= None)
+POST        /user                   controllers.bootstrap.UserController.create
+POST        /session                controllers.bootstrap.UserController.login
 
-POST        /service                 controllers.bootstrap.OAuthController.registerService
-POST        /service/session         controllers.bootstrap.OAuthController.loginOAuthToken
+POST        /service                controllers.bootstrap.OAuthController.registerService
+POST        /service/session        controllers.bootstrap.OAuthController.loginOAuthToken

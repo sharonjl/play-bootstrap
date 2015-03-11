@@ -55,7 +55,7 @@ object UserController extends Controller {
   }
 
   def login = Action { implicit request =>
-    val errorTag = "user.login"
+    val errorTag = "session.login"
     userForm.bindFromRequest.fold(
       formWithErrors => {
         BadRequest(formWithErrors.errorsAsJson)
