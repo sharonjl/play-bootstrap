@@ -15,8 +15,8 @@ libraryDependencies ++= Seq(
   ws,
   "org.postgresql" % "postgresql" % "9.3-1102-jdbc41",
   "com.roundeights" %% "hasher" % "1.0.0",
-  "joda-time" % "joda-time" % "2.3",
-  "org.scalatestplus" %% "play" % "1.2.0" % "test"
+  "org.scalatestplus" %% "play" % "1.2.0" % "test",
+  "com.github.nscala-time" %% "nscala-time" % "1.8.0"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
